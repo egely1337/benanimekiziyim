@@ -56,10 +56,11 @@ class Client:
                             print("[INFO] Sent link answer to", i.id)
                             i.mark_read()
                         elif self.mention not in i.body and i.author != "AutoModerator":
-                            copy: str = i.body
                             msg: str = i.body
                             msg = msg.replace(self.mention, "")
                             response = ollama.send_query(q=msg)
+
+                            print(response)
    
                             i.reply(response)
                             i.mark_read()
