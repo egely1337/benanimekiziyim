@@ -59,9 +59,7 @@ class Client:
                             msg: str = i.body
                             msg = msg.replace(self.mention, "")
                             response = ollama.send_query(q=msg)
-
-                            print(response)
-   
+                            
                             i.reply(response)
                             i.mark_read()
                             print("[INFO] Sent AI answer to", i.id)
@@ -83,38 +81,32 @@ class Client:
         open('sent.txt', 'a+').write(id+'\n')
 
     def check_subreddits(self) -> None:
-        try:
-            for submission in self.client.subreddit('+'.join(config["subreddits"])).new(limit=10): # Get submissions from subreddits that defined in config.json
-                submission: Submission # Convert it to Submission object so intellisense detect it.
-                if submission.domain == 'v.redd.it' and submission.id not in self.parse_ids():
+        for submission in self.client.subreddit('+'.join(config["subreddits"])).new(limit=10): # Get submissions from subreddits that defined in config.json
+            submission: Submission # Convert it to Submission object so intellisense detect it.
+            if submission.domain == 'v.redd.it' and submission.id not in self.parse_ids():
+                try:
                     submission.reply(template.format(api_url) % (submission.subreddit, submission.id))
+                except:
                     self.append_id(submission.id)
-                    print("[INFO] Sent link answer to", submission.id)
-                else:
-                    #print("[ERROR] Video already exists in sent.txt", submission.id)
                     continue
-        except RedditAPIException as ratelimit:
-            print(ratelimit)
-            print("[ERROR] Reddit API Error")
-            sleep(60*5) # Sleep 5 minutes to evade rate-limit
-            pass
+                self.append_id(submission.id)
+                print("[INFO] Sent link answer to", submission.id)
+            else:
+                continue
     
     def check_english_subreddits(self) -> None:
-        try:
-            for submission in self.client.subreddit('+'.join(config["english_subreddits"])).new(limit=10): # Get submissions from subreddits that defined in config.json
-                submission: Submission # Convert it to Submission object so intellisense detect it.
-                if submission.domain == 'v.redd.it' and submission.id not in self.parse_ids():
+        for submission in self.client.subreddit('+'.join(config["english_subreddits"])).new(limit=10): # Get submissions from subreddits that defined in config.json
+            submission: Submission # Convert it to Submission object so intellisense detect it.
+            if submission.domain == 'v.redd.it' and submission.id not in self.parse_ids():
+                try:
                     submission.reply(english_template.format(api_url) % (submission.subreddit, submission.id))
+                except:
                     self.append_id(submission.id)
-                    print("[INFO] Sent link answer to", submission.id)
-                else:
-                    #print("[ERROR] Video already exists in sent.txt", submission.id)
                     continue
-        except RedditAPIException as ratelimit:
-            print(ratelimit)
-            print("[ERROR] Reddit API Error")
-            sleep(60*5) # Sleep 5 minutes to evade rate-limit
-            pass
+                self.append_id(submission.id)
+                print("[INFO] Sent link answer to", submission.id)
+            else:
+                continue
     
     def loop(self):
         while True:
