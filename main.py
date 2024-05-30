@@ -94,6 +94,7 @@ class Client:
                     #print("[ERROR] Video already exists in sent.txt", submission.id)
                     continue
         except RedditAPIException as ratelimit:
+            print(ratelimit)
             print("[ERROR] Reddit API Error")
             sleep(60*5) # Sleep 5 minutes to evade rate-limit
             pass
@@ -110,6 +111,7 @@ class Client:
                     #print("[ERROR] Video already exists in sent.txt", submission.id)
                     continue
         except RedditAPIException as ratelimit:
+            print(ratelimit)
             print("[ERROR] Reddit API Error")
             sleep(60*5) # Sleep 5 minutes to evade rate-limit
             pass
