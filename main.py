@@ -6,13 +6,12 @@ from json import load
 from time import sleep
 import traceback
 
-import openai 
+import ollama
  
 load_dotenv()
 
 config = load(open('config.json')) # Load config and convert it to dict.
 api_url = "https://animekizi.org/download/%s/%s?utm_source=benanimekiziyim" # %1: Subreddit, %2: Post Id
-openai.api_key = getenv('OPENAI_APIKEY')
 template = \
 """
 # [İndir!]({})
@@ -60,22 +59,9 @@ class Client:
                             copy: str = i.body
                             msg: str = i.body
                             msg = msg.replace(self.mention, "")
-                            msg = open("personality.txt").read().format(msg)
-
-                            completion = openai.Completion.create(
-                                engine="text-davinci-003",
-                                prompt=msg,
-                                max_tokens=400,
-                                n=1,
-                                stop=None,
-                                temperature=0.5
-                            )
-                            answer = completion.choices[0].text.lower()
-                            answer = answer.replace("?", '').replace("Cevap:", '').replace("{}:".format('u/benanimekiziyim'.capitalize()), '').replace(',', '').replace('!', '').replace('.', '').replace(':', '')\
-                                .replace('answer', '').replace('"', '')\
-                                    .replace('your response', '').replace(copy, '').replace(')', '')
-                            
-                            i.reply(answer)
+                            response = ollama.send_query(q=msg)
+   
+                            i.reply(response)
                             i.mark_read()
                             print("[INFO] Sent AI answer to", i.id)
                         else: i.mark_read()
@@ -136,6 +122,8 @@ class Client:
 
 
 def main():
+    ollama.setup()
+
     reddit_client = Client(
         client_id=getenv("APP_ID"),
         username=getenv("USERNAME"),
