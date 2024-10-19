@@ -1,5 +1,12 @@
-from praw import Reddit
-from praw.reddit import Comment, Submission, Subreddit, RedditAPIException
+import os
+
+try:
+    from praw import Reddit
+    from praw.reddit import Comment, Submission, Subreddit, RedditAPIException
+    from loguru import logger
+except:
+    os.system("pip3 install praw loguru colorama")
+
 from os import getenv
 from dotenv import load_dotenv
 from json import load
@@ -43,7 +50,7 @@ class Client:
     def start(self):
         self.client.inbox.mark_all_read() # Mark read all objects in inbox.
 
-        print("[INFO] Started as" , self.client.user.me())
+        logger.info("Started as" , self.client.user.me())
 
         self.mention = 'u/%s' % (self.client.user.me())
 
@@ -55,7 +62,7 @@ class Client:
                     if submission.domain == 'v.redd.it': # If it is coming from an video
                         if i.body == self.mention:
                             i.reply(template.format(api_url) % (submission.subreddit, submission.id)) # Send a reply
-                            print("[INFO] Sent link answer to", i.id)
+                            logger.info("Sent link answer to", i.id)
                             i.mark_read()
                         elif self.mention not in i.body and i.author != "AutoModerator":
                             msg: str = i.body
@@ -64,7 +71,7 @@ class Client:
                             
                             i.reply(response)
                             i.mark_read()
-                            print("[INFO] Sent AI answer to", i.id)
+                            logger.success("Sent AI answer to", i.id)
                         else: i.mark_read()
                     else:
                         i.mark_read()
@@ -92,7 +99,7 @@ class Client:
                     self.append_id(submission.id)
                     continue
                 self.append_id(submission.id)
-                print("[INFO] Sent link answer to", submission.id)
+                logger.success("Sent link answer to", submission.id)
             else:
                 continue
     
