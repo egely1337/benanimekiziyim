@@ -19,7 +19,7 @@ def send_query(
         resp = requests.post(
             url="http://localhost:11434/api/chat",
             json={
-                "model": 'llama3',
+                "model": 'llama3.2', # is too light it runs very well
                 "messages": messages,
                 "stream": False,
             }             

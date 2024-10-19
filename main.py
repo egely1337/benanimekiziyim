@@ -11,18 +11,20 @@ import ollama
 load_dotenv()
 
 config = load(open('config.json')) # Load config and convert it to dict.
-api_url = "https://animekizi.org/download/%s/%s?utm_source=benanimekiziyim" # %1: Subreddit, %2: Post Id
+api_url = "https://saveitbro.xyz/save?subreddit=%s&post_id=%s?utm_source=benanimekiziyim" # %1: Subreddit, %2: Post Id
 template = \
 """
 # [İndir!]({})
+# [Bana bir kahve al](https://ko-fi.com/saveitbro)
 ---
 ^(Bip bop! Ben video indirici asko bot!.)
 """
 english_template = \
 """
 # [Download!]({})
+# [Buy me a coffee](https://ko-fi.com/saveitbro)
 ---
-^(Bip bop! I am a anime girl bot!.)
+^(Beep bop! I am a otaku bot!)
 """
 
 class Client:
